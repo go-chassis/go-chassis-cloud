@@ -34,6 +34,7 @@ var (
 	ErrNoEngineName = errors.New("engine name is empty")
 )
 
+//Init fetch endpoints from engine manager
 func Init() error {
 	region := env.RegionName()
 	if region == "" {
@@ -52,6 +53,7 @@ func Init() error {
 	if err != nil {
 		return err
 	}
+	config.GlobalDefinition.Cse.Service.Registry.Address = md.CSE.PrivateEndpoint["serviceCenter"]
 	config.GlobalDefinition.Cse.Service.Registry.ServiceDiscovery.Address = config.GlobalDefinition.Cse.Service.Registry.Address
 	config.GlobalDefinition.Cse.Config.Client.ServerURI = md.CSE.PrivateEndpoint["configCenter"]
 	config.GlobalDefinition.Cse.Monitor.Client.ServerURI = md.CSE.PrivateEndpoint["dashboardService"]
