@@ -36,6 +36,9 @@ var (
 
 //Init fetch endpoints from engine manager
 func Init() error {
+	if err := loadAuth(); err != nil {
+		return err
+	}
 	region := env.RegionName()
 	if region == "" {
 		return ErrEmptyRegion
@@ -65,7 +68,7 @@ func Init() error {
 		}))
 	return nil
 }
-
 func init() {
+	bootstrap.InstallPlugin("huaweiauth", bootstrap.Func(Init))
 	bootstrap.InstallPlugin("engine_endpoint_fetcher", bootstrap.Func(Init))
 }
