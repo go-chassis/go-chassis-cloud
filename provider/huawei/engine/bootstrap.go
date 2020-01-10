@@ -30,7 +30,7 @@ import (
 )
 
 var (
-	ErrEmptyRegion  = errors.New("env " + env.ENVRegion + " is empty, please manually set it")
+	ErrEmptyRegion  = errors.New("env " + env.Region + " is empty, please manually set it")
 	ErrNoEngineName = errors.New("engine name is empty")
 )
 

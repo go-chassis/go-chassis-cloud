@@ -13,3 +13,4 @@
 
 example/log
 example/main
+example/conf/auth.yaml

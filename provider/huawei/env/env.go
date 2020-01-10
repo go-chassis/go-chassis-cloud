@@ -19,9 +19,9 @@ package env
 
 import "os"
 
-const ENVRegion = "PAAS_PROJECT_NAME"
+var Region = os.Getenv("PAAS_PROJECT_NAME")
 
 // service deployed by service stage will be inject this env
 func RegionName() string {
-	return os.Getenv("PAAS_PROJECT_NAME")
+	return Region
 }

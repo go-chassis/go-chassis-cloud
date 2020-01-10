@@ -3,6 +3,7 @@ package engine
 import (
 	"errors"
 	"fmt"
+	"github.com/go-chassis/go-chassis-cloud/provider/huawei/env"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -23,7 +24,6 @@ import (
 )
 
 const (
-	EnvProject      = "PAAS_PROJECT_NAME"
 	cipherRootEnv   = "CIPHER_ROOT"
 	keytoolAkskFile = "certificate.yaml"
 
@@ -64,7 +64,7 @@ func loadPaaSAuth() error {
 	if err != nil {
 		return err
 	}
-	projectFromEnv := os.Getenv(EnvProject)
+	projectFromEnv := os.Getenv(env.Region)
 	if projectFromEnv != "" {
 		openlogging.GetLogger().Infof("huawei cloud project: %s", projectFromEnv)
 	}
@@ -160,7 +160,7 @@ func getAkskConfig() (*model.CredentialStruct, error) {
 	// 2, use project in the credential config
 	// 3, use project in cse uri contain
 	// 4, use project "default"
-	if v := os.Getenv(EnvProject); v != "" {
+	if v := os.Getenv(env.RegionName()); v != "" {
 		c.Project = v
 	}
 	if c.Project == "" {
