@@ -69,6 +69,5 @@ func Init() error {
 	return nil
 }
 func init() {
-	bootstrap.InstallPlugin("huaweiauth", bootstrap.Func(Init))
 	bootstrap.InstallPlugin("engine_endpoint_fetcher", bootstrap.Func(Init))
 }

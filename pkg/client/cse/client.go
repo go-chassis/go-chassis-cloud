@@ -22,7 +22,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"github.com/go-chassis/foundation/httpclient"
 	"github.com/go-chassis/go-chassis/pkg/util/httputil"
 )
@@ -56,7 +56,7 @@ func (c *Client) GetEngineMD(engineName string) (*EngineMD, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		return nil, errors.New("bad status:" + resp.Status)
+		return nil, fmt.Errorf("status: %s, resp: %s"+resp.Status, httputil.ReadBody(resp))
 	}
 	b := httputil.ReadBody(resp)
 	engine := &EngineMD{}

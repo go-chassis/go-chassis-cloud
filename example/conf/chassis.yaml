@@ -2,7 +2,7 @@
 cse:
   service:
     registry:
-      address: https://cse.cn-north-4.myhuaweicloud.com
+      address: https://cse.cn-north-1.myhuaweicloud.com
   protocols:
     rest:
       listenAddress: "0.0.0.0:4000"
@@ -12,4 +12,4 @@ cse:
         default: tracing-provider,bizkeeper-provider
 servicecomb:
   engine:
-    name: cse-78oaik
+    name: default
