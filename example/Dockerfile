@@ -17,7 +17,7 @@ FROM golang:1.12.10 as builder
 
 ADD . /example/
 WORKDIR /example/
-ENV GOPROXY=https://goproxy.io
+ENV GOPROXY=https://goproxy.cn
 RUN go build -a github.com/go-chassis/go-chassis-cloud/example
 
 
