@@ -17,7 +17,7 @@ import (
 	"github.com/go-chassis/go-chassis/core/common"
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/config/model"
-	"github.com/go-chassis/go-chassis/security"
+	"github.com/go-chassis/go-chassis/security/cipher"
 	"github.com/go-mesh/openlogging"
 	"github.com/huaweicse/auth"
 	"gopkg.in/yaml.v2"
@@ -86,7 +86,7 @@ func loadPaaSAuth() error {
 }
 
 func getAkskCustomCipher(name string) (security2.Cipher, error) {
-	f, err := security.GetCipherNewFunc(name)
+	f, err := cipher.GetCipherNewFunc(name)
 	if err != nil {
 		return nil, err
 	}

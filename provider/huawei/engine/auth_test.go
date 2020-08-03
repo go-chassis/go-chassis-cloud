@@ -11,8 +11,8 @@ import (
 	"github.com/go-chassis/go-chassis/core/common"
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/config/model"
-	_ "github.com/go-chassis/go-chassis/security/plugins/aes"
-	_ "github.com/go-chassis/go-chassis/security/plugins/plain"
+	_ "github.com/go-chassis/go-chassis/security/cipher/plugins/aes"
+	_ "github.com/go-chassis/go-chassis/security/cipher/plugins/plain"
 	"github.com/huaweicse/auth"
 	"github.com/stretchr/testify/assert"
 )
