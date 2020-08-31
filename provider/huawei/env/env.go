@@ -19,9 +19,22 @@ package env
 
 import "os"
 
-var Region = os.Getenv("PAAS_PROJECT_NAME")
+// envs will be injected when services are deployed on ServiceStage
+var regionName = os.Getenv("PAAS_REGION_NAME")
+var projectName = os.Getenv("PAAS_PROJECT_NAME")
+var engineManagerAddr = os.Getenv("PAAS_CSE_ENGINE_MGR_ENDPOINT")
 
-// service deployed by service stage will be inject this env
+// RegionName returns region name
 func RegionName() string {
-	return Region
+	return regionName
+}
+
+// ProjectName returns project name
+func ProjectName() string {
+	return projectName
+}
+
+// EngineManagerAddr returns cse engine manager address
+func EngineManagerAddr() string {
+	return engineManagerAddr
 }
