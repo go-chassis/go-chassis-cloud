@@ -3,13 +3,14 @@ package engine
 import (
 	"errors"
 	"fmt"
-	"github.com/go-chassis/go-chassis-cloud/provider/huawei/env"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/go-chassis/go-chassis-cloud/provider/huawei/env"
 
 	"github.com/go-chassis/foundation/httpclient"
 	security2 "github.com/go-chassis/foundation/security"
@@ -64,7 +65,7 @@ func loadPaaSAuth() error {
 	if err != nil {
 		return err
 	}
-	projectFromEnv := os.Getenv(env.Region)
+	projectFromEnv := env.ProjectName()
 	if projectFromEnv != "" {
 		openlogging.GetLogger().Infof("huawei cloud project: %s", projectFromEnv)
 	}
@@ -147,7 +148,7 @@ func getAkskConfig() (*model.CredentialStruct, error) {
 		if err != nil {
 			return nil, err
 		}
-		c = &(globalConf.Cse.Credentials)
+		c = &(globalConf.ServiceComb.Credentials)
 	}
 	if c.AccessKey == "" && c.SecretKey == "" {
 		return nil, auth.ErrAuthConfNotExist
@@ -160,7 +161,7 @@ func getAkskConfig() (*model.CredentialStruct, error) {
 	// 2, use project in the credential config
 	// 3, use project in cse uri contain
 	// 4, use project "default"
-	if v := os.Getenv(env.RegionName()); v != "" {
+	if v := env.ProjectName(); v != "" {
 		c.Project = v
 	}
 	if c.Project == "" {
@@ -185,9 +186,9 @@ func loadAkskAuth() error {
 	}
 	openlogging.GetLogger().Infof("huawei cloud auth AK: %s, project: %s", c.AccessKey, c.Project)
 	plainSk := c.SecretKey
-	cipher := c.AkskCustomCipher
-	if cipher != "" {
-		cipherPlugin, err := getAkskCustomCipher(cipher)
+	cipherPluginName := c.AkskCustomCipher
+	if cipherPluginName != "" {
+		cipherPlugin, err := getAkskCustomCipher(cipherPluginName)
 		if err != nil {
 			return err
 		}

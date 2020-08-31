@@ -19,19 +19,14 @@ package engine
 
 import (
 	"errors"
-	"github.com/go-chassis/go-archaius"
-	"github.com/go-chassis/go-chassis/core/config"
-	"github.com/go-mesh/openlogging"
-	"strings"
 
 	"github.com/go-chassis/go-chassis-cloud/pkg/client/cse"
 	"github.com/go-chassis/go-chassis-cloud/provider/huawei/env"
-	"github.com/go-chassis/go-chassis/bootstrap"
-)
 
-var (
-	ErrEmptyRegion  = errors.New("env " + env.Region + " is empty, please manually set it")
-	ErrNoEngineName = errors.New("engine name is empty")
+	"github.com/go-chassis/go-archaius"
+	"github.com/go-chassis/go-chassis/bootstrap"
+	"github.com/go-chassis/go-chassis/core/config"
+	"github.com/go-mesh/openlogging"
 )
 
 //Init fetch endpoints from engine manager
@@ -39,16 +34,15 @@ func Init() error {
 	if err := loadAuth(); err != nil {
 		return err
 	}
-	region := env.RegionName()
-	if region == "" {
-		return ErrEmptyRegion
-	}
 	name := archaius.GetString("servicecomb.engine.name", "")
-	if name == "" {
-		return ErrNoEngineName
+	if name == "" || name == "default" {
+		return nil
 	}
-	ep := strings.Join([]string{"https://cse", region, "myhuaweicloud.com"}, ".")
-	c, err := cse.New(cse.Options{Endpoint: ep})
+	openlogging.Info("cse engine name to register to: " + name)
+	if env.EngineManagerAddr() == "" {
+		return errors.New("engine manager address must be set, when engine name is set")
+	}
+	c, err := cse.New(cse.Options{Endpoint: env.EngineManagerAddr()})
 	if err != nil {
 		return err
 	}
@@ -56,15 +50,14 @@ func Init() error {
 	if err != nil {
 		return err
 	}
-	config.GlobalDefinition.Cse.Service.Registry.Address = md.CSE.PrivateEndpoint["serviceCenter"]
-	config.GlobalDefinition.Cse.Service.Registry.ServiceDiscovery.Address = config.GlobalDefinition.Cse.Service.Registry.Address
-	config.GlobalDefinition.Cse.Config.Client.ServerURI = md.CSE.PrivateEndpoint["configCenter"]
-	config.GlobalDefinition.Cse.Monitor.Client.ServerURI = md.CSE.PrivateEndpoint["dashboardService"]
+	config.GlobalDefinition.ServiceComb.Registry.Address = md.CSE.PrivateEndpoint["serviceCenter"]
+	config.GlobalDefinition.ServiceComb.Config.Client.ServerURI = md.CSE.PrivateEndpoint["configCenter"]
+	config.GlobalDefinition.ServiceComb.Monitor.Client.ServerURI = md.CSE.PrivateEndpoint["dashboardService"]
 	openlogging.Info("discover service from engine manager", openlogging.WithTags(
 		openlogging.Tags{
-			"discovery": config.GlobalDefinition.Cse.Service.Registry.Address,
-			"config":    config.GlobalDefinition.Cse.Config.Client.ServerURI,
-			"dashboard": config.GlobalDefinition.Cse.Monitor.Client.ServerURI,
+			"discovery": config.GlobalDefinition.ServiceComb.Registry.Address,
+			"config":    config.GlobalDefinition.ServiceComb.Config.Client.ServerURI,
+			"dashboard": config.GlobalDefinition.ServiceComb.Monitor.Client.ServerURI,
 		}))
 	return nil
 }
