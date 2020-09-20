@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/go-chassis/go-archaius"
-	"github.com/go-chassis/go-chassis"
-	"github.com/go-chassis/go-chassis/server/restful"
+	"github.com/go-chassis/go-chassis/v2"
+	"github.com/go-chassis/go-chassis/v2/server/restful"
 	"net/http"
 
 	_ "github.com/go-chassis/go-chassis-cloud/provider/huawei/engine"

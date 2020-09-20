@@ -8,11 +8,11 @@ import (
 	"testing"
 
 	"github.com/go-chassis/foundation/httpclient"
-	"github.com/go-chassis/go-chassis/core/common"
-	"github.com/go-chassis/go-chassis/core/config"
-	"github.com/go-chassis/go-chassis/core/config/model"
-	_ "github.com/go-chassis/go-chassis/security/cipher/plugins/aes"
-	_ "github.com/go-chassis/go-chassis/security/cipher/plugins/plain"
+	"github.com/go-chassis/go-chassis/v2/core/common"
+	"github.com/go-chassis/go-chassis/v2/core/config"
+	"github.com/go-chassis/go-chassis/v2/core/config/model"
+	_ "github.com/go-chassis/go-chassis/v2/security/cipher/plugins/aes"
+	_ "github.com/go-chassis/go-chassis/v2/security/cipher/plugins/plain"
 	"github.com/huaweicse/auth"
 	"github.com/stretchr/testify/assert"
 )
@@ -93,7 +93,7 @@ func Test_loadAkskAuth(t *testing.T) {
 
 	config.InitArchaius()
 	config.GlobalDefinition = &model.GlobalCfg{}
-	config.GlobalDefinition.Cse.Service.Registry.Address = uriWithProjectCnNorth
+	config.GlobalDefinition.ServiceComb.Registry.Address = uriWithProjectCnNorth
 	err = loadAkskAuth()
 	assert.NoError(t, err)
 	testCheckAkAndProject(t, ak, project)
@@ -150,7 +150,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	httpclient.SignRequest = func(*http.Request) error { return nil }
 	ak, sk, project, cipherName = "a7", "s7", "", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	config.GlobalDefinition.Cse.Service.Registry.Address = ":://a+b"
+	config.GlobalDefinition.ServiceComb.Registry.Address = ":://a+b"
 	err = loadAkskAuth()
 	assert.Error(t, err)
 	assert.NotEqual(t, auth.ErrAuthConfNotExist, err)
@@ -164,7 +164,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	testCheckAkAndProject(t, ak, project)
 
 	t.Log("Use default project")
-	config.GlobalDefinition.Cse.Service.Registry.Address = "http://cse:8080"
+	config.GlobalDefinition.ServiceComb.Registry.Address = "http://cse:8080"
 	ak, sk, project, cipherName = "a10", "s10", "", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
 	err = loadAkskAuth()
