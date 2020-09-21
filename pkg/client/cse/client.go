@@ -24,7 +24,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-chassis/foundation/httpclient"
-	"github.com/go-chassis/go-chassis/pkg/util/httputil"
+	"github.com/go-chassis/go-chassis/v2/pkg/util/httputil"
 )
 
 type Client struct {

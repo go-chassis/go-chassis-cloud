@@ -24,8 +24,8 @@ import (
 	"github.com/go-chassis/go-chassis-cloud/provider/huawei/env"
 
 	"github.com/go-chassis/go-archaius"
-	"github.com/go-chassis/go-chassis/bootstrap"
-	"github.com/go-chassis/go-chassis/core/config"
+	"github.com/go-chassis/go-chassis/v2/bootstrap"
+	"github.com/go-chassis/go-chassis/v2/core/config"
 	"github.com/go-mesh/openlogging"
 )
 
