@@ -19,26 +19,25 @@ package engine
 
 import (
 	"errors"
-
+	"github.com/go-chassis/go-archaius"
+	"github.com/go-chassis/go-chassis-cloud/auth"
 	"github.com/go-chassis/go-chassis-cloud/pkg/client/cse"
 	"github.com/go-chassis/go-chassis-cloud/provider/huawei/env"
-
-	"github.com/go-chassis/go-archaius"
 	"github.com/go-chassis/go-chassis/v2/bootstrap"
 	"github.com/go-chassis/go-chassis/v2/core/config"
-	"github.com/go-mesh/openlogging"
+	"github.com/go-chassis/openlog"
 )
 
 //Init fetch endpoints from engine manager
 func Init() error {
-	if err := loadAuth(); err != nil {
+	if err := auth.LoadAuth(); err != nil {
 		return err
 	}
 	name := archaius.GetString("servicecomb.engine.name", "")
 	if name == "" || name == "default" {
 		return nil
 	}
-	openlogging.Info("cse engine name to register to: " + name)
+	openlog.Info("cse engine name to register to: " + name)
 	if env.EngineManagerAddr() == "" {
 		return errors.New("engine manager address must be set, when engine name is set")
 	}
@@ -53,8 +52,8 @@ func Init() error {
 	config.GlobalDefinition.ServiceComb.Registry.Address = md.CSE.PrivateEndpoint["serviceCenter"]
 	config.GlobalDefinition.ServiceComb.Config.Client.ServerURI = md.CSE.PrivateEndpoint["configCenter"]
 	config.GlobalDefinition.ServiceComb.Monitor.Client.ServerURI = md.CSE.PrivateEndpoint["dashboardService"]
-	openlogging.Info("discover service from engine manager", openlogging.WithTags(
-		openlogging.Tags{
+	openlog.Info("discover service from engine manager", openlog.WithTags(
+		openlog.Tags{
 			"discovery": config.GlobalDefinition.ServiceComb.Registry.Address,
 			"config":    config.GlobalDefinition.ServiceComb.Config.Client.ServerURI,
 			"dashboard": config.GlobalDefinition.ServiceComb.Monitor.Client.ServerURI,
