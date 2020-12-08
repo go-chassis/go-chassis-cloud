@@ -1,20 +1,19 @@
-package engine
+package auth_test
 
 import (
 	"fmt"
-	"net/http"
-	"os"
-	"path/filepath"
-	"testing"
-
 	"github.com/go-chassis/foundation/httpclient"
+	"github.com/go-chassis/go-chassis-cloud/auth"
 	"github.com/go-chassis/go-chassis/v2/core/common"
 	"github.com/go-chassis/go-chassis/v2/core/config"
 	"github.com/go-chassis/go-chassis/v2/core/config/model"
 	_ "github.com/go-chassis/go-chassis/v2/security/cipher/plugins/aes"
 	_ "github.com/go-chassis/go-chassis/v2/security/cipher/plugins/plain"
-	"github.com/huaweicse/auth"
 	"github.com/stretchr/testify/assert"
+	"net/http"
+	"os"
+	"path/filepath"
+	"testing"
 )
 
 func testWriteFile(t *testing.T, name string, ak, sk, project, cipher string) {
@@ -61,7 +60,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	chassisConf := filepath.Join(chassisHome, "conf")
 	err := os.MkdirAll(chassisConf, 0700)
 	assert.NoError(t, err)
-	os.Setenv(cipherRootEnv, cipherRootDir)
+	os.Setenv(auth.CipherRootEnv, cipherRootDir)
 	err = os.MkdirAll(cipherRootDir, 0700)
 	assert.NoError(t, err)
 
@@ -69,7 +68,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	microserviceFilePath := filepath.Join(chassisConf, "microservice.yaml")
 	os.Create(chassisFilePath)
 	os.Create(microserviceFilePath)
-	credentialFilePath := filepath.Join(cipherRootDir, keytoolAkskFile)
+	credentialFilePath := filepath.Join(cipherRootDir, auth.KeytoolAkskFile)
 	uriWithProjectCnNorth := "https://cse.cn-north-1.myhwclouds.com:443"
 
 	t.Log("Get aksk config from chassis.yaml")
@@ -94,14 +93,14 @@ func Test_loadAkskAuth(t *testing.T) {
 	config.InitArchaius()
 	config.GlobalDefinition = &model.GlobalCfg{}
 	config.GlobalDefinition.ServiceComb.Registry.Address = uriWithProjectCnNorth
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.NoError(t, err)
 	testCheckAkAndProject(t, ak, project)
 
 	t.Log("Get aksk config from CIPHER_ROOT/certificate.yaml")
 	ak, sk, project, cipherName = "a1", "s1", "p1", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.NoError(t, err)
 	testCheckAkAndProject(t, ak, project)
 
@@ -109,7 +108,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	httpclient.SignRequest = func(*http.Request) error { return nil }
 	ak, sk, project, cipherName = "a2", "", "p2", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.Error(t, err)
 	assert.NotEqual(t, auth.ErrAuthConfNotExist, err)
 	testAuthNotLoaded(t)
@@ -118,7 +117,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	httpclient.SignRequest = func(*http.Request) error { return nil }
 	ak, sk, project, cipherName = "", "", "p3", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.Error(t, err)
 	assert.Equal(t, auth.ErrAuthConfNotExist, err)
 	testAuthNotLoaded(t)
@@ -126,7 +125,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	t.Log("AkskCustomCipher exists")
 	ak, sk, project, cipherName = "a4", "s4", "p4", "default"
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.NoError(t, err)
 	testCheckAkAndProject(t, ak, project)
 
@@ -134,7 +133,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	httpclient.SignRequest = func(*http.Request) error { return nil }
 	ak, sk, project, cipherName = "a5", "s5", "p5", "c5"
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.Error(t, err)
 	assert.NotEqual(t, auth.ErrAuthConfNotExist, err)
 	testAuthNotLoaded(t)
@@ -142,16 +141,16 @@ func Test_loadAkskAuth(t *testing.T) {
 	t.Log("Get project from uri")
 	ak, sk, project, cipherName = "a6", "s6", "", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.NoError(t, err)
 	testCheckAkAndProject(t, ak, "cn-north-1")
 
-	t.Log("Cse uri invalid")
+	t.Log("ServiceComb uri invalid")
 	httpclient.SignRequest = func(*http.Request) error { return nil }
 	ak, sk, project, cipherName = "a7", "s7", "", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
 	config.GlobalDefinition.ServiceComb.Registry.Address = ":://a+b"
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.Error(t, err)
 	assert.NotEqual(t, auth.ErrAuthConfNotExist, err)
 	testAuthNotLoaded(t)
@@ -159,7 +158,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	t.Log("Get project from config")
 	ak, sk, project, cipherName = "a9", "s9", "p9", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.NoError(t, err)
 	testCheckAkAndProject(t, ak, project)
 
@@ -167,7 +166,7 @@ func Test_loadAkskAuth(t *testing.T) {
 	config.GlobalDefinition.ServiceComb.Registry.Address = "http://cse:8080"
 	ak, sk, project, cipherName = "a10", "s10", "", ""
 	testWriteFile(t, credentialFilePath, ak, sk, project, cipherName)
-	err = loadAkskAuth()
+	err = auth.LoadAkskAuth()
 	assert.NoError(t, err)
 	testCheckAkAndProject(t, ak, common.DefaultValue)
 }

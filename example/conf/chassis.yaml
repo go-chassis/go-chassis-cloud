@@ -1,8 +1,7 @@
 ---
-cse:
+servicecomb:
   protocols:
     rest:
       listenAddress: "0.0.0.0:4000"
-servicecomb:
   engine:
     name: default

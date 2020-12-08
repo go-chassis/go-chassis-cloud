@@ -17,7 +17,9 @@
 
 package cse
 
-import "github.com/huaweicse/auth"
+import (
+	"github.com/go-chassis/go-chassis-cloud/auth"
+)
 
 type Options struct {
 	Endpoint string

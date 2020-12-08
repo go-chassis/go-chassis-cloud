@@ -19,8 +19,8 @@ package cse_test
 
 import (
 	"github.com/go-chassis/foundation/httpclient"
+	"github.com/go-chassis/go-chassis-cloud/auth"
 	"github.com/go-chassis/go-chassis-cloud/pkg/client/cse"
-	"github.com/huaweicse/auth"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
