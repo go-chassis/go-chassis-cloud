@@ -20,9 +20,13 @@ const (
 	CipherRootEnv   = "CIPHER_ROOT"
 	KeytoolAkskFile = "certificate.yaml"
 
-	keyAK      = "servicecomb.credentials.accessKey"
-	keySK      = "servicecomb.credentials.secretKey"
-	keyProject = "servicecomb.credentials.project"
+	keyAKV2      = "servicecomb.credentials.accessKey"
+	keySKV2      = "servicecomb.credentials.secretKey"
+	keyProjectV2 = "servicecomb.credentials.project"
+
+	keyAK      = "cse.credentials.accessKey"
+	keySK      = "cse.credentials.secretKey"
+	keyProject = "cse.credentials.project"
 )
 
 //ErrAuthConfNotExist means the auth config not exist
