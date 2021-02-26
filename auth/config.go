@@ -47,10 +47,10 @@ func getAkskConfig() (*model.CredentialStruct, error) {
 
 	c := &model.CredentialStruct{}
 	if akskFile == "" {
-		c.AccessKey = archaius.GetString(keyAK, "")
-		c.SecretKey = archaius.GetString(keySK, "")
-		c.Project = archaius.GetString(keyProject, "")
-		c.AkskCustomCipher = archaius.GetString(common.AKSKCustomCipher, "")
+		c.AccessKey = archaius.GetString(keyAKV2, archaius.GetString(keyAK, ""))
+		c.SecretKey = archaius.GetString(keySKV2, archaius.GetString(keySK, ""))
+		c.Project = archaius.GetString(keyProjectV2, archaius.GetString(keyProject, ""))
+		c.AkskCustomCipher = archaius.GetString(common.AKSKCustomCipher, archaius.GetString("cse.credentials.akskCustomCipher", ""))
 	} else {
 		yamlContent, err := ioutil.ReadFile(akskFile)
 		if err != nil {
