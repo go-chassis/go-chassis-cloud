@@ -35,8 +35,7 @@ type Client struct {
 
 func New(opts Options) (*Client, error) {
 	ho := &httpclient.Options{
-		SSLEnabled: true,
-		TLSConfig:  &tls.Config{InsecureSkipVerify: true},
+		TLSConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	if opts.Signer != nil {
 		ho.SignRequest = opts.Signer
